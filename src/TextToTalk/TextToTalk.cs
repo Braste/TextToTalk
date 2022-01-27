@@ -241,11 +241,10 @@ namespace TextToTalk
 
             var senderText = sender?.TextValue; // Can't access in lambda
             var speaker = Objects.FirstOrDefault(a => a.Name.TextValue.Equals(senderText));
-            speaker = speaker == null ? Objects.FirstOrDefault(a => senderText.Contains(a.Name.TextValue)) : speaker;
-
-            // Don't send TTS for own text
+            speaker = speaker == null ? Objects.FirstOrDefault(a => senderText.Contains(a.Name.TextValue)) : speaker; // Another plugin could change the name (like adding the group position in front of it), so we are checking both directions now
+            
             PlayerCharacter player = ClientState.LocalPlayer;
-            if (this.config.SkipOwnText && player != null && player.ObjectId.Equals(speaker?.ObjectId)) return;
+            if (this.config.SkipOwnText && player != null && player.ObjectId.Equals(speaker?.ObjectId)) return; // Don't send TTS for own text
 
             var textValue = message.TextValue;
             if (IsDuplicateQuestText(textValue)) return;
@@ -275,7 +274,7 @@ namespace TextToTalk
                             SetLastQuestText(textValue);
                         }
                         
-                        textValue = $"{sender.TextValue} says {textValue}";
+                        textValue = $"{sender.TextValue} sagt {textValue}";
                         SetLastSpeaker(sender.TextValue);
                     }
                 }
