@@ -138,6 +138,12 @@ namespace TextToTalk.UI
                     ImGui.Spacing();
                     ImGui.Indent();
 
+                    string textTosay = Configuration.TextToSay;
+                    if (ImGui.InputText("What text to say when \"X says:\" is enabled", ref textTosay, 100))
+                    {
+                        Configuration.TextToSay = textTosay;
+                        Configuration.Save();
+                    }
                     var nameNpcWithSay = Configuration.NameNpcWithSay;
                     if (ImGui.Checkbox("Also say \"NPC Name says:\" in NPC dialogue", ref nameNpcWithSay))
                     {

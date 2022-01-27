@@ -1,4 +1,5 @@
-﻿using TextToTalk.Backends;
+﻿using Dalamud.Logging;
+using TextToTalk.Backends;
 
 namespace TextToTalk.Migrations
 {
@@ -19,6 +20,7 @@ namespace TextToTalk.Migrations
             }
 
             config.MigratedTo1_6 = true;
+            PluginLog.Log("Configuration migrated to version 1.6");
         }
     }
 }

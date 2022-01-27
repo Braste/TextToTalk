@@ -249,9 +249,7 @@ namespace TextToTalk
             var textValue = message.TextValue;
             if (IsDuplicateQuestText(textValue)) return;
 
-#if DEBUG
-            PluginLog.Log("Chat message from type {0}: {1}", type, textValue);
-#endif
+            PluginLog.Debug("Chat message from type {0}: {1}", type, textValue);
 
             // This section controls speaker-related functions.
             if (sender != null && sender.TextValue != string.Empty)
@@ -274,7 +272,7 @@ namespace TextToTalk
                             SetLastQuestText(textValue);
                         }
                         
-                        textValue = $"{sender.TextValue} sagt {textValue}";
+                        textValue = $"{sender.TextValue} {config.TextToSay} {textValue}";
                         SetLastSpeaker(sender.TextValue);
                     }
                 }

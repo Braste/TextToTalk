@@ -39,10 +39,7 @@ namespace TextToTalk
         [Obsolete("Use Backend.")]
         public bool UseWebsocket { get; set; }
 
-        /// <summary>
-        /// <c>true</c> if it is not the first time, <c>false</c> if the first time handler has not run before. This was named horribly.
-        /// </summary>
-        [Obsolete("Use InitializedEver.")]
+        [Obsolete("Use IsInitialized.")]
         public bool FirstTime { get; set; }
         #endregion
 
@@ -57,6 +54,8 @@ namespace TextToTalk
         public bool MigratedTo1_5 { get; set; }
 
         public bool MigratedTo1_6 { get; set; }
+
+        public bool MigratedTo1_7 { get; set; }
 
         public IList<Trigger> Bad { get; set; }
         public IList<Trigger> Good { get; set; }
@@ -113,14 +112,9 @@ namespace TextToTalk
 
         public List<string> PollyLexicons { get; set; }
 
-        [JsonIgnore]
-        public bool InitializedEver
-        {
-#pragma warning disable 618
-            get => FirstTime;
-            set => FirstTime = value;
-#pragma warning restore 618
-        }
+        public string TextToSay { get; set; } = "says";
+
+        [JsonIgnore] public bool IsInitialized { get; set; }
 
         [JsonIgnore] private DalamudPluginInterface pluginInterface;
 
@@ -153,7 +147,16 @@ namespace TextToTalk
 
             Lexicons ??= new List<string>();
 
-            if (!InitializedEver)
+            var migrations = new IConfigurationMigration[] { new Migration1_5(), new Migration1_6(), new Migration1_7() };
+            foreach (var migration in migrations)
+            {
+                if (migration.ShouldMigrate(this))
+                {
+                    migration.Migrate(this);
+                }
+            }
+
+            if (!IsInitialized)
             {
                 EnabledChatTypesPresets.Add(new EnabledChatTypesPreset
                 {
@@ -187,23 +190,11 @@ namespace TextToTalk
                     });
                 }
 
-                InitializedEver = true;
+                IsInitialized = true;
                 MigratedTo1_5 = true;
                 MigratedTo1_6 = true;
+                MigratedTo1_7 = true;
             }
-
-            if (InitializedEver)
-            {
-                var migrations = new IConfigurationMigration[] { new Migration1_5(), new Migration1_6() };
-                foreach (var migration in migrations)
-                {
-                    if (migration.ShouldMigrate(this))
-                    {
-                        migration.Migrate(this);
-                    }
-                }
-            }
-
             Save();
         }
 
