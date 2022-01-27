@@ -75,6 +75,8 @@ namespace TextToTalk
 
         public bool EnableNameWithSay { get; set; } = true;
 
+        public bool SkipOwnText { get; set; } = true;
+
         public bool DisallowMultipleSay { get; set; }
 
         public bool ReadFromQuestTalkAddon { get; set; } = true;

@@ -118,6 +118,14 @@ namespace TextToTalk.UI
                 }
 
                 ImGui.Spacing();
+                var skipOwnText = Configuration.SkipOwnText;
+                if (ImGui.Checkbox("Skip own text", ref skipOwnText))
+                {
+                    Configuration.SkipOwnText = skipOwnText;
+                    Configuration.Save();
+                }
+
+                ImGui.Spacing();
                 var enableNameWithSay = Configuration.EnableNameWithSay;
                 if (ImGui.Checkbox("Enable \"X says:\" when people speak", ref enableNameWithSay))
                 {

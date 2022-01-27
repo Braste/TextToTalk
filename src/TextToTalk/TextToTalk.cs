@@ -26,6 +26,7 @@ using TextToTalk.UI;
 using TextToTalk.UngenderedOverrides;
 using DalamudCommandManager = Dalamud.Game.Command.CommandManager;
 using GameObject = Dalamud.Game.ClientState.Objects.Types.GameObject;
+using Dalamud.Game.ClientState.Objects.SubKinds;
 
 namespace TextToTalk
 {
@@ -238,6 +239,14 @@ namespace TextToTalk
         {
             if (!this.config.Enabled) return;
 
+            var senderText = sender?.TextValue; // Can't access in lambda
+            var speaker = Objects.FirstOrDefault(a => a.Name.TextValue.Equals(senderText));
+            speaker = speaker == null ? Objects.FirstOrDefault(a => senderText.Contains(a.Name.TextValue)) : speaker;
+
+            // Don't send TTS for own text
+            PlayerCharacter player = ClientState.LocalPlayer;
+            if (this.config.SkipOwnText && player != null && player.ObjectId.Equals(speaker?.ObjectId)) return;
+
             var textValue = message.TextValue;
             if (IsDuplicateQuestText(textValue)) return;
 
@@ -265,7 +274,7 @@ namespace TextToTalk
 
                             SetLastQuestText(textValue);
                         }
-
+                        
                         textValue = $"{sender.TextValue} says {textValue}";
                         SetLastSpeaker(sender.TextValue);
                     }
@@ -281,9 +290,6 @@ namespace TextToTalk
                 .Where(t => t.Text != "")
                 .Any(t => t.Match(textValue));
             if (!(chatTypes.EnableAllChatTypes || typeAccepted) || this.config.Good.Count > 0 && !goodMatch) return;
-
-            var senderText = sender?.TextValue; // Can't access in lambda
-            var speaker = Objects.FirstOrDefault(a => a.Name.TextValue == senderText);
 
             Say(speaker, textValue, TextSource.Chat);
         }
