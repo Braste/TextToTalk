@@ -1,6 +1,6 @@
 ﻿name: TextToTalk
-author: karashiiro
+author: karashiiro, Braste84
 description: Chat TTS. Use /tttconfig to configure the enabled channels and triggers/exceptions.
-repo_url: https://github.com/karashiiro/TextToTalk
-tags: [ "tts", "trigger", "triggers", "voice", "voices", "speech", "karashiiro" ]
+repo_url: https://github.com/Braste/TextToTalk
+tags: [ "tts", "trigger", "triggers", "voice", "voices", "speech", "karashiiro", "braste84" ]
 dalamud_api_level: 5
